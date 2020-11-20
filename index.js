@@ -48,6 +48,8 @@ app.use(function(req, res, next){
   res.locals.appName = config.APP_NAME
   res.locals.supportEmail = config.SUPPORT_EMAIL
   res.locals.pollUrl = config.POLL_URL
+  res.locals.numPinDigits = config.NUM_PIN_DIGITS
+  res.locals.useOVHRoomAPI = config.USE_OVH_ROOM_API
   res.locals.errors = req.flash('error')
   res.locals.infos = req.flash('info')
   res.locals.successes = req.flash('success')
@@ -106,6 +108,10 @@ app.get(urls.contact, (req, res) => {
 app.get(urls.status, statusController.getStatus)
 
 const init = async () => {
+  if (config.USE_OVH_ROOM_API) {
+    return
+  }
+  console.log('Using Numbers OVH API, fetching phone numbers')
   try {
      const phoneNumbers = await conferences.getAllPhoneNumbers()
      await Promise.all(phoneNumbers.map(phoneNumber => db.insertPhoneNumber(phoneNumber)))
@@ -115,6 +121,6 @@ const init = async () => {
 }
 
 module.exports = app.listen(config.PORT, () => {
-  init();
+  init()
   console.log(`It is ${format.formatFrenchDateTime(new Date())}, ${config.APP_NAME} listening at http://localhost:${config.PORT}`)
 })
