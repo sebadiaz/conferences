@@ -12,6 +12,7 @@ const format = require('./lib/format')
 const createConfController = require('./controllers/createConfController')
 const landingController = require('./controllers/landingController')
 const sendValidationEmailController = require('./controllers/sendValidationEmailController')
+const statusController = require('./controllers/statusController')
 const stats = require('./lib/stats')
 const urls = require('./urls')
 
@@ -101,6 +102,8 @@ app.get(urls.contact, (req, res) => {
     pageTitle: 'Contact',
   })
 })
+
+app.get(urls.status, statusController.getStatus)
 
 const init = async () => {
   try {
